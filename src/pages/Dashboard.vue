@@ -209,9 +209,9 @@ export default {
         url: "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/countries-name-ordered",
         headers: {
           "x-rapidapi-host":
-            "vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com",
+            process.env.APIHOST,
           "x-rapidapi-key":
-            "77d0a1e417msh2ea267d180ab92ep1787e8jsn16255560f958",
+            process.env.APIKEY,
         },
       };
 
