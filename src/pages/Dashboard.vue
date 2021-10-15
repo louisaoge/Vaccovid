@@ -199,9 +199,9 @@ export default {
         }/${this.countryISO || "nga"}`,
         headers: {
           "x-rapidapi-host":
-            "vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com",
+            process.env.VUE_APP_APIHOST,
           "x-rapidapi-key":
-            "77d0a1e417msh2ea267d180ab92ep1787e8jsn16255560f958",
+            process.env.VUE_APP_APIKEY,
         },
       };
       var countryOptions = {
@@ -209,9 +209,9 @@ export default {
         url: "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/countries-name-ordered",
         headers: {
           "x-rapidapi-host":
-            process.env.APIHOST,
+            process.env.VUE_APP_APIHOST,
           "x-rapidapi-key":
-            process.env.APIKEY,
+            process.env.VUE_APP_APIKEY,
         },
       };
 
