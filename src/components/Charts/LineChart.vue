@@ -26,13 +26,15 @@ export default {
       options: {
         responsive: true,
         lineTension: 1,
+        animation: {
+          duration: 1200,
+          easing: "easeInOutQuart",
+        },
         scales: {
           yAxes: [
             {
               ticks: {
                 beginAtZero: true,
-                padding: 25,
-                
               },
               gridLines: {
                 display: true,
@@ -41,11 +43,20 @@ export default {
           ],
           xAxes: [
             {
+              stacked: true,
+              ticks: {
+                beginAtZero: false,
+                padding: 5,
+              },
               gridLines: {
                 display: false,
               },
             },
           ],
+        },
+        legend: {
+          position: "top",
+          align: "end",
         },
       },
     };

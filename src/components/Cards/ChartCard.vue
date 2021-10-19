@@ -1,5 +1,5 @@
 <template>
-  <b-col lg="3">
+  <b-col lg="3" md="6">
     <b-card bg-variant="light"
       ><h6>{{ title }}</h6>
       <h4>{{ description }}</h4>
@@ -19,10 +19,15 @@
 
 <script>
 import LineChart from "../Charts/LineChart.vue";
+import { BCol, BCard } from "bootstrap-vue";
 
+// import 'bootstrap-vue/dist/bootstrap-vue.css'
 export default {
+  name: "ChartCard",
   components: {
     LineChart,
+    "b-col": BCol,
+    "b-card": BCard,
   },
   props: {
     data: {

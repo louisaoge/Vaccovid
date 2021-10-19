@@ -1,7 +1,7 @@
 <template>
   <div style="text-align: left" class="container">
-    <b-row class="pb-3">
-      <b-col lg="auto">
+    <b-row>
+      <b-col lg="4">
         <b-card bg-variant="light">
           <datepicker
             placeholder="Start Date"
@@ -12,7 +12,7 @@
           ></datepicker>
         </b-card>
       </b-col>
-      <b-col lg="auto">
+      <b-col lg="4">
         <b-card bg-variant="light">
           <datepicker
             placeholder="End Date"
@@ -38,7 +38,7 @@
       </b-col>
     </b-row>
     <data-card :data="allData" :duration="_endDate"></data-card>
-    <b-row class="py-5">
+    <b-row>
       <chart-card
         :title="'Cases'"
         :description="'People tested positive'"
@@ -46,7 +46,7 @@
         :data="casesCollection"
         :dates="dateCollection"
         :name="'People tested positive'"
-        :bg="'rgb(250,218,218)'"
+        :bg="'rgba(225,139,91,.5)'"
         :isLoaded="loaded"
       ></chart-card>
       <chart-card
@@ -56,7 +56,7 @@
         :data="deathCollection"
         :dates="dateCollection"
         :name="'Deaths'"
-        :bg="'rgb(179,131,134)'"
+        :bg="'rgba(179,131,134,.5)'"
         :isLoaded="loaded"
       ></chart-card>
       <chart-card
@@ -66,7 +66,7 @@
         :data="recovCollection"
         :dates="dateCollection"
         :name="'Recovered'"
-        :bg="'rgb(176,245,179)'"
+        :bg="'rgba(176,245,179,.5)'"
         :isLoaded="loaded"
       ></chart-card>
       <chart-card
@@ -76,7 +76,7 @@
         :data="testingCollection"
         :dates="dateCollection"
         :name="'Testing'"
-        :bg="'rgb(250,232,177)'"
+        :bg="'rgba(238,190,43,.5)'"
         :isLoaded="loaded"
       ></chart-card>
     </b-row>
@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { BRow, BCol, BCard } from "bootstrap-vue";
 import Datepicker from "vuejs-datepicker";
 import ChartCard from "../components/Cards/ChartCard.vue";
 import DataCard from "../components/Cards/DataCard.vue";
@@ -96,6 +97,9 @@ export default {
     ChartCard,
     DataCard,
     Datepicker,
+    "b-row": BRow,
+    "b-col": BCol,
+    "b-card": BCard,
   },
   data() {
     return {
@@ -117,7 +121,7 @@ export default {
       allData: {},
       showError: false,
       errorMessage: "Please enter a package name",
-      periodStart: new Date(2021, 7, 1),
+      periodStart: new Date(2021, 8, 1),
       periodEnd: new Date(),
       disabledDates: {
         from: new Date(), // Disable all dates after specific date
@@ -126,13 +130,13 @@ export default {
     };
   },
   methods: {
-    requestData: async function() {
+    requestData: async function () {
       this.loaded = false;
       CovidDataRepository.getCountryData(this.country, this.countryISO)
         .then((response) => {
           this.allData = response.data[0];
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error(error);
         });
       CovidDataRepository.getAllCountryData(
@@ -152,7 +156,7 @@ export default {
           );
           this.loaded = true;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error(error);
         });
       CovidDataRepository.getCountries()
@@ -160,7 +164,7 @@ export default {
           this.countries = response.data;
           this.mloaded = true;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error(error);
         });
     },
