@@ -1,5 +1,5 @@
 <template>
-  <div  style="text-align: left" class="container">
+  <div style="text-align: left" class="container">
     <b-row class="pb-3">
       <b-col lg="auto">
         <b-card bg-variant="light">
@@ -35,112 +35,66 @@
             @input="requestData"
           ></v-select>
         </b-card>
-      </b-col> </b-row
-    ><b-card bg-variant="light">
-      <b-row no-gutters>
-        <b-col>
-          <div >
-            <h6>Vaccinations</h6>
-            <h4>People vaccinated</h4>
-            <p>Up to and including {{ _endDate || 'N/A'}}</p>
-          </div>
-        </b-col>
-        <b-col>
-          <b-row>
-            <b-col sm="6">
-              <h6>Daily — 1st dose</h6>
-              <h4>{{allData.one_Caseevery_X_ppl || 'N/A'}}</h4>
-              <hr />
-            </b-col>
-            <b-col sm="6">
-              <h6>Daily — 2nd dose</h6>
-              <h4>{{allData.one_Deathevery_X_ppl || 'N/A'}}</h4> <hr />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col sm="6">
-              <h6>Total — 1st dose</h6>
-              <h4>{{allData.TotalCases || 'N/A'}}</h4>
-             
-            </b-col>
-            <b-col sm="6">
-              <h6>Total — 2nd dose</h6>
-              <h4>{{allData.TotalDeaths || 'N/A'}}</h4>
-            </b-col>
-          </b-row>
-        </b-col>
-      </b-row></b-card
-    >
+      </b-col>
+    </b-row>
+    <data-card :data="allData" :duration="_endDate"></data-card>
     <b-row class="py-5">
-      <b-col lg="3">
-        <b-card bg-variant="light"
-          ><h6>Cases</h6>
-          <h4>People tested positive</h4>
-           <p style="font-size:14px"> Latest data provided on {{ _endDate || 'N/A'}}</p>
-          <line-chart
-            v-if="loaded"
-            :chartData="casesCollection"
-            :chartLabels="dateCollection"
-            :chartName="'People tested positive'"
-            :bgColor="'rgb(250,218,218)'"
-          ></line-chart>
-        </b-card>
-      </b-col>
-      <b-col lg="3">
-        <b-card bg-variant="light">
-          <h6>Death</h6>
-          <h4>Deaths within 28 days of positive test</h4>
-           <p style="font-size:14px">Latest data provided on {{ _endDate || 'N/A'}}</p>
-          <line-chart
-            v-if="loaded"
-            :chartData="deathCollection"
-            :chartLabels="dateCollection"
-            :chartName="'Deaths'"
-            :bgColor="'rgb(179,131,134)'"
-          ></line-chart>
-        </b-card>
-      </b-col>
-      <b-col lg="3">
-        <b-card bg-variant="light">
-          <h6>Health Care</h6>
-          <h4>Patients admitted</h4>
-           <p style="font-size:14px">Latest data provided on {{ _endDate || 'N/A'}}</p>
-          <line-chart
-            v-if="loaded"
-            :chartData="recovCollection"
-            :chartLabels="dateCollection"
-            :chartName="'Recovered'"
-            :bgColor="'rgb(176,245,179)'"
-          ></line-chart>
-        </b-card>
-      </b-col>
-      <b-col lg="3">
-        <b-card bg-variant="light">
-          <h6>Testing</h6><h4>
-          Virus tests conducted</h4>
-           <p style="font-size:14px">Latest data provided on {{ _endDate || 'N/A'}}</p>
-          <line-chart
-            v-if="loaded"
-            :chartData="testingCollection"
-            :chartLabels="dateCollection"
-            :chartName="'Testing'"
-            :bgColor="'rgb(250,232,177)'"
-          ></line-chart>
-        </b-card>
-      </b-col>
+      <chart-card
+        :title="'Cases'"
+        :description="'People tested positive'"
+        :duration="_endDate"
+        :data="casesCollection"
+        :dates="dateCollection"
+        :name="'People tested positive'"
+        :bg="'rgb(250,218,218)'"
+        :isLoaded="loaded"
+      ></chart-card>
+      <chart-card
+        :title="'Death'"
+        :description="'Deaths within 28 days of positive test'"
+        :duration="_endDate"
+        :data="deathCollection"
+        :dates="dateCollection"
+        :name="'Deaths'"
+        :bg="'rgb(179,131,134)'"
+        :isLoaded="loaded"
+      ></chart-card>
+      <chart-card
+        :title="'Health Care'"
+        :description="'Patients admitted'"
+        :duration="_endDate"
+        :data="recovCollection"
+        :dates="dateCollection"
+        :name="'Recovered'"
+        :bg="'rgb(176,245,179)'"
+        :isLoaded="loaded"
+      ></chart-card>
+      <chart-card
+        :title="'Testing'"
+        :description="'Virus tests conducted'"
+        :duration="_endDate"
+        :data="testingCollection"
+        :dates="dateCollection"
+        :name="'Testing'"
+        :bg="'rgb(250,232,177)'"
+        :isLoaded="loaded"
+      ></chart-card>
     </b-row>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import Datepicker from "vuejs-datepicker";
-import LineChart from "../components/LineChart.vue";
+import ChartCard from "../components/Cards/ChartCard.vue";
+import DataCard from "../components/Cards/DataCard.vue";
 import { dateToDay, dateBeautify, dateBeautify2 } from "../utils/dateFormatter";
+import { RepositoryFactory } from "@/repositories/RepositoryFactory";
+const CovidDataRepository = RepositoryFactory.get("data");
 
 export default {
   components: {
-    LineChart,
+    ChartCard,
+    DataCard,
     Datepicker,
   },
   data() {
@@ -172,60 +126,20 @@ export default {
     };
   },
   methods: {
-    getLabel: function (option) {
-      let newLabel = null;
-      if (typeof option === "object") {
-        // eslint-disable-next-line no-prototype-builtins
-        if (!option.hasOwnProperty(this.label)) {
-          newLabel = option.Country;
-        }
-      }
-      return newLabel;
-    },
-    requestData: async function () {
+    requestData: async function() {
       this.loaded = false;
-      var options = {
-        method: "GET",
-        url: `https://webhooks.mongodb-stitch.com/api/client/v2.0/app/covid-19-qppza/service/REST-API/incoming_webhook/global_and_us?country=${
-          this.country || "Nigeria"
-        }&min_date=${dateToDay(this.periodStart)}&max_date=${dateToDay(
-          this.periodEnd
-        )}&hide_fields=_id, country, country_code, country_iso2, country_iso3, loc, state`,
-      };
-      var mainOptions = {
-        method: "GET",
-        url: `https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/country-report-iso-based/${
-          this.country || "Nigeria"
-        }/${this.countryISO || "nga"}`,
-        headers: {
-          "x-rapidapi-host":
-            process.env.VUE_APP_APIHOST,
-          "x-rapidapi-key":
-            process.env.VUE_APP_APIKEY,
-        },
-      };
-      var countryOptions = {
-        method: "GET",
-        url: "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/countries-name-ordered",
-        headers: {
-          "x-rapidapi-host":
-            process.env.VUE_APP_APIHOST,
-          "x-rapidapi-key":
-            process.env.VUE_APP_APIKEY,
-        },
-      };
-
-      axios
-        .request(mainOptions)
-        .then((response)=> {
+      CovidDataRepository.getCountryData(this.country, this.countryISO)
+        .then((response) => {
           this.allData = response.data[0];
-          console.log(response.data)
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error);
         });
-      axios
-        .request(options)
+      CovidDataRepository.getAllCountryData(
+        this.country,
+        dateToDay(this.periodStart),
+        dateToDay(this.periodEnd)
+      )
         .then((response) => {
           this.dateCollection = response.data.map((date) =>
             dateBeautify(date.date)
@@ -238,21 +152,19 @@ export default {
           );
           this.loaded = true;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error);
         });
-      axios
-        .request(countryOptions)
+      CovidDataRepository.getCountries()
         .then((response) => {
           this.countries = response.data;
           this.mloaded = true;
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error(error);
         });
     },
     validateDataRequest() {
-      console.log("ValidateData");
       if (this.periodStart !== "") {
         this.requestData();
       }
@@ -276,11 +188,11 @@ export default {
         : "last-month";
     },
     country() {
-      let newO = "";
+      let newCountry = "";
       if (this.selectedCountry) {
-        newO = this.selectedCountry.Country;
+        newCountry = this.selectedCountry.Country;
       }
-      return newO;
+      return newCountry;
     },
     countryISO() {
       let newISO = "";
