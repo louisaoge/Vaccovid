@@ -1,38 +1,42 @@
 <template>
   <div style="text-align: left" class="container">
     <b-row>
-      <b-col lg="4">
+      <b-col md="4">
         <b-card bg-variant="light">
           <datepicker
+            :bootstrapStyling="true"
             placeholder="Start Date"
             v-model="periodStart"
             name="start-date"
+            :clearButton="true"
             @selected="validateDataRequest"
             :disabledDates="disabledDates"
           ></datepicker>
         </b-card>
       </b-col>
-      <b-col lg="4">
+      <b-col md="4">
         <b-card bg-variant="light">
           <datepicker
+            :bootstrapStyling="true"
             placeholder="End Date"
             v-model="periodEnd"
             name="end-date"
+            :clearButton="true"
             @selected="validateDataRequest"
             :disabledDates="disabledDates"
           ></datepicker>
         </b-card>
       </b-col>
-      <b-col lg="4">
+      <b-col md="4">
         <b-card bg-variant="light">
           <v-select
             v-if="mloaded"
             v-model="selectedCountry"
             :options="countries"
             :get-option-label="(option) => option.Country"
-            :clearable="false"
+            :clearable="true"
             placeholder="Select Country"
-            @input="requestData"
+            @input="validateDataRequest"
           ></v-select>
         </b-card>
       </b-col>
@@ -169,7 +173,12 @@ export default {
         });
     },
     validateDataRequest() {
-      if (this.periodStart !== "") {
+      if (
+        this.periodStart !== "" &&
+        this.periodStart &&
+        this.periodEnd !== "" &&
+        this.periodEnd
+      ) {
         this.requestData();
       }
     },
