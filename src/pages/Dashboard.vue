@@ -90,6 +90,8 @@
 <script>
 import { BRow, BCol, BCard } from "bootstrap-vue";
 import Datepicker from "vuejs-datepicker";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import ChartCard from "../components/Cards/ChartCard.vue";
 import DataCard from "../components/Cards/DataCard.vue";
 import { dateToDay, dateBeautify, dateBeautify2 } from "../utils/dateFormatter";
@@ -104,11 +106,10 @@ export default {
     "b-row": BRow,
     "b-col": BCol,
     "b-card": BCard,
+    "v-select": vSelect,
   },
   data() {
     return {
-      package: null,
-      packageName: "",
       loaded: false,
       mloaded: false,
       selectedCountry: {
@@ -121,10 +122,7 @@ export default {
       recovCollection: [],
       testingCollection: [],
       countries: [],
-      labels: [],
       allData: {},
-      showError: false,
-      errorMessage: "Please enter a package name",
       periodStart: new Date(2021, 8, 1),
       periodEnd: new Date(),
       disabledDates: {
@@ -134,6 +132,7 @@ export default {
     };
   },
   methods: {
+    // retrieve data from api
     requestData: async function () {
       this.loaded = false;
       CovidDataRepository.getCountryData(this.country, this.countryISO)
@@ -173,6 +172,7 @@ export default {
         });
     },
     validateDataRequest() {
+      // validate start and end date are provided before request
       if (
         this.periodStart !== "" &&
         this.periodStart &&
@@ -190,16 +190,6 @@ export default {
     _startDate() {
       return dateToDay(this.periodStart);
     },
-    period() {
-      return this.periodStart
-        ? `${this._startDate}:${this._endDate}`
-        : "last-month";
-    },
-    formattedPeriod() {
-      return this.periodStart
-        ? `${dateBeautify(this._startDate)} - ${dateBeautify(this._endDate)}`
-        : "last-month";
-    },
     country() {
       let newCountry = "";
       if (this.selectedCountry) {
@@ -216,6 +206,7 @@ export default {
     },
   },
   async mounted() {
+    // retrieve default data on page load
     this.requestData();
   },
 };

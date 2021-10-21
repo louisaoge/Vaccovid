@@ -20,8 +20,6 @@
 <script>
 import LineChart from "../Charts/LineChart.vue";
 import { BCol, BCard } from "bootstrap-vue";
-
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
 export default {
   name: "ChartCard",
   components: {
